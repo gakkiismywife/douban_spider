@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/gocolly/colly/v2"
+	"math/rand"
 	"os"
-	"spider_douban/wechat"
+	"spider_douban/cache"
+	"spider_douban/process"
 	"strings"
 	"time"
 )
@@ -18,35 +20,41 @@ var ctx context.Context
 
 var visited bool
 
-var isFirst = true
-
 var group string
 
-func main() {
+var start = time.Now().Unix()
+
+func init() {
 	flag.StringVar(&group, "group", "", "小组链接")
 	flag.Parse()
 
 	if group == "" {
 		fmt.Println("请输入需要监控的小组url")
-		return
+		os.Exit(1)
 	}
 
-	//初始化redis
-	initRedis()
+	rdb = cache.GetRedisClient()
+	ctx = context.Background()
 
 	//删除上次允许的缓存
 	rdb.Del(ctx, group)
+}
 
+func main() {
 	//定时
-	ticker := time.NewTicker(time.Second * 300)
+	ticker := time.NewTicker(time.Second * 600)
 
-	c := initCollector(group)
+	c := initCollector()
 
-	c.Visit(group)
+	err := c.Visit(group)
+	if err != nil {
+		fmt.Println("[main]c.Visit err:", err)
+		return
+	}
 	for {
 		select {
 		case <-ticker.C:
-			isFirst = false
+			process.IsFirst = false
 			visited, _ = c.HasVisited(group)
 			if visited {
 				c.Init()
@@ -60,26 +68,16 @@ func main() {
 	}
 }
 
-func initRedis() {
-	rdb = redis.NewClient(&redis.Options{
-		Addr:     "120.78.67.238:6379",
-		Password: "woaini1!",
-		DB:       0,
-	})
-
-	ctx = context.Background()
-}
-
-func initCollector(url string) *colly.Collector {
+func initCollector() *colly.Collector {
 	c := colly.NewCollector()
 
 	c.OnHTML("tr td:nth-of-type(1) a", func(e *colly.HTMLElement) {
 		//帖子标题
 		title := e.Text
-
 		title = strings.Replace(title, " ", "", -1)
 		title = strings.Replace(title, "\n", "", -1)
 
+		//过滤标题带作业的
 		filter := strings.Contains(title, "【作业】")
 		if !filter {
 			return
@@ -88,20 +86,10 @@ func initCollector(url string) *colly.Collector {
 		//链接
 		postUrl := e.Attr("href")
 
-		exists := rdb.HExists(ctx, url, postUrl).Val()
+		num := time.Duration(rand.Intn(10) + 10)
+		time.Sleep(time.Second * num)
 
-		//新帖子
-		if !exists {
-			fmt.Println(title)
-			go rdb.HSet(ctx, url, postUrl, title).Result() //放入缓存
-
-			if !isFirst {
-				message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s", title, postUrl)
-				go notification(message) // 触发通知
-			}
-
-		}
-
+		go process.VisitDetail(group, postUrl, title, start)
 	})
 
 	c.OnRequest(func(r *colly.Request) {
@@ -115,13 +103,4 @@ func initCollector(url string) *colly.Collector {
 	})
 
 	return c
-}
-
-func notification(content string) {
-	token := wechat.GetAccessToken("ww531df613e9b51972", "iV0r9_rU6PU1-TYQzKTmi5kTEG2RQNvFpQOEcRSvN0g")
-	if token == "" {
-		fmt.Println("获取token失败")
-		return
-	}
-	wechat.SendMessage(token, content)
 }
