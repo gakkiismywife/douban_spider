@@ -42,7 +42,7 @@ func init() {
 
 func main() {
 	//定时
-	ticker := time.NewTicker(time.Second * 600)
+	ticker := time.NewTicker(time.Second * 1800)
 
 	c := initCollector()
 

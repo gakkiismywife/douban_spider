@@ -12,28 +12,27 @@ import (
 var IsFirst = true
 
 func VisitDetail(url, detailUrl, title string, start int64) {
-	c := colly.NewCollector()
 	rdb := cache.GetRedisClient()
 	defer rdb.Close()
 
+	//判断是否请求过
+	isVisited := rdb.HExists(context.Background(), url, detailUrl).Val()
+	if isVisited {
+		fmt.Println(fmt.Sprintf("[process]%s has visited", title))
+		return
+	}
+	c := colly.NewCollector()
+
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
-		fmt.Println(fmt.Sprintf("[%s]创建时间为%s", title, e.Text))
 		t, _ := time.ParseInLocation("2006-01-02 03:04:05", e.Text, time.Local)
+		fmt.Println(fmt.Sprintf("%s创建时间为%s", title, e.Text), t)
 		publishTime := t.Unix()
-		if publishTime > start {
-			exists := rdb.HExists(context.Background(), url, detailUrl).Val()
 
-			//新帖子
-			if !exists {
-				fmt.Println(title)
-				go rdb.HSet(context.Background(), url, detailUrl, title).Result() //放入缓存
+		go rdb.HSet(context.Background(), url, detailUrl, title).Result() //放入缓存
 
-				if !IsFirst {
-					message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s", title, detailUrl)
-					go notification(message) // 触发通知
-				}
-
-			}
+		if publishTime > start && !isVisited && !IsFirst {
+			message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s", title, detailUrl)
+			go notification(message) // 触发通知
 		}
 	})
 
