@@ -35,7 +35,7 @@ func VisitDetail(url, detailUrl, title string) {
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
 		t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
 		publishTime := t.Unix()
-		fmt.Println(fmt.Sprintf("%s创建时间为%s", title, e.Text), publishTime, isVisited)
+		fmt.Println(fmt.Sprintf("%s创建时间为%s", title, e.Text))
 
 		go rdb.HSet(context.Background(), url, detailUrl, title).Result() //放入缓存
 
