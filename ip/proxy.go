@@ -19,8 +19,8 @@ type ProxyResponse struct {
 }
 
 func GetIp() string {
-	url := "https://dps.kdlapi.com/api/getdps/?secret_id=om9zx4xaja6q962r2r52&num=1&signature=oam45g6ko1zx3ftyjmrw23jjh7&pt=1&format=json&sep=1"
-	response, err := http.Get(url)
+	serverUrl := "https://dps.kdlapi.com/api/getdps/?secret_id=om9zx4xaja6q962r2r52&num=1&signature=o04yhwf64f93qnzh5g9be55sm2&pt=1&format=json&sep=1"
+	response, err := http.Get(serverUrl)
 	if err != nil {
 		fmt.Println("[ip.proxy] http.Get err :", err)
 		return ""

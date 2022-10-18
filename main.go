@@ -58,6 +58,7 @@ func initCollector() *colly.Collector {
 
 	//获取代理ip
 	proxyIp := ip.GetIp()
+	fmt.Println("[main]get a proxy ip :", proxyIp)
 	if proxyIp != "" {
 		switcher, err := proxy.RoundRobinProxySwitcher("http://" + proxyIp)
 		if err != nil {
