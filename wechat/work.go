@@ -1,11 +1,14 @@
 package wechat
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"spider_douban/cache"
 	"strings"
+	"time"
 )
 
 type MessageRequest struct {
@@ -62,7 +65,15 @@ func SendMessage(token, content string) {
 	fmt.Println(string(all))
 }
 
+// GetAccessToken 获取token
 func GetAccessToken(id, secret string) string {
+	rdb := cache.GetRedisClient()
+	defer rdb.Close()
+	result, _ := rdb.Get(context.Background(), "access_token").Result()
+	if result != "" {
+		return result
+	}
+
 	url := fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s", id, secret)
 	response, _ := http.Get(url)
 	defer response.Body.Close()
@@ -77,6 +88,8 @@ func GetAccessToken(id, secret string) string {
 		fmt.Println("json.Unmarshal err:", err)
 		return ""
 	}
+
+	rdb.Set(context.Background(), "access_token", res.Token, time.Second*1800)
 
 	return res.Token
 }
