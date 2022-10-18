@@ -7,6 +7,7 @@ import (
 	"github.com/gocolly/colly/v2/proxy"
 	"math/rand"
 	"os"
+	"spider_douban/config"
 	"spider_douban/ip"
 	"spider_douban/process"
 	"strings"
@@ -16,12 +17,8 @@ import (
 //监测的小组url
 var group string
 
-//开始时间
-var start int64
-
 func init() {
 	flag.StringVar(&group, "group", "", "小组链接")
-	flag.Int64Var(&start, "start", time.Now().Unix(), "开始时间")
 	flag.Parse()
 
 	if group == "" {
@@ -31,7 +28,7 @@ func init() {
 }
 
 func main() {
-	ticker := time.NewTicker(time.Second * 600)
+	ticker := time.NewTicker(config.INTERVAL * time.Second)
 
 	c := initCollector()
 
@@ -84,7 +81,7 @@ func initCollector() *colly.Collector {
 		time.Sleep(time.Second * num)
 
 		//浏览详情
-		go process.VisitDetail(group, postUrl, title, start)
+		go process.VisitDetail(group, postUrl, title)
 	})
 
 	c.OnRequest(func(r *colly.Request) {

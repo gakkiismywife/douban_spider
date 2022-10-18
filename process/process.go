@@ -6,13 +6,14 @@ import (
 	"github.com/gocolly/colly/v2"
 	"github.com/gocolly/colly/v2/proxy"
 	"spider_douban/cache"
+	"spider_douban/config"
 	"spider_douban/ip"
 	"spider_douban/wechat"
 	"time"
 )
 
 // VisitDetail 请求帖子详情
-func VisitDetail(url, detailUrl, title string, start int64) {
+func VisitDetail(url, detailUrl, title string) {
 	rdb := cache.GetRedisClient()
 	defer rdb.Close()
 
@@ -32,11 +33,11 @@ func VisitDetail(url, detailUrl, title string, start int64) {
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
 		t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
 		publishTime := t.Unix()
-		fmt.Println(fmt.Sprintf("%s创建时间为%s", title, e.Text), publishTime, start, isVisited)
+		fmt.Println(fmt.Sprintf("%s创建时间为%s", title, e.Text), publishTime, isVisited)
 
 		go rdb.HSet(context.Background(), url, detailUrl, title).Result() //放入缓存
 
-		if publishTime > start && !isVisited {
+		if time.Now().Unix()-publishTime < config.INTERVAL && !isVisited {
 			message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", title, detailUrl, e.Text)
 			go notification(message) // 触发通知
 		}
