@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"github.com/gocolly/colly/v2/proxy"
 	"spider_douban/cache"
 	"spider_douban/wechat"
 	"time"
@@ -21,6 +22,11 @@ func VisitDetail(url, detailUrl, title string, start int64) {
 		return
 	}
 	c := colly.NewCollector()
+	switcher, err := proxy.RoundRobinProxySwitcher("http://119.23.218.11:16816")
+	if err != nil {
+		return
+	}
+	c.SetProxyFunc(switcher)
 
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
 		t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
