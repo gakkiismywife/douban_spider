@@ -23,7 +23,9 @@ func VisitDetail(url, detailUrl, title string) {
 		fmt.Println(fmt.Sprintf("[process]%s has visited", title))
 		return
 	}
-	c := colly.NewCollector()
+	c := colly.NewCollector(
+		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
+	)
 	switcher, err := proxy.RoundRobinProxySwitcher(ip.ProxyIp...)
 	if err != nil {
 		return
@@ -44,7 +46,8 @@ func VisitDetail(url, detailUrl, title string) {
 	})
 
 	c.OnRequest(func(request *colly.Request) {
-		fmt.Println("VisitDetail:", title, "url", detailUrl)
+		request.Headers.Set("Referer", url)
+		fmt.Println("VisitDetail:", title)
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
