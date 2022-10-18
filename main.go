@@ -55,10 +55,6 @@ func main() {
 		select {
 		case <-ticker.C:
 			process.IsFirst = false
-			visited, _ = c.HasVisited(group)
-			if visited {
-				c.Init()
-			}
 			err := c.Visit(group)
 			if err != nil {
 				fmt.Println("c.Visit err:", err)
@@ -69,7 +65,7 @@ func main() {
 }
 
 func initCollector() *colly.Collector {
-	c := colly.NewCollector()
+	c := colly.NewCollector(colly.AllowURLRevisit())
 
 	c.OnHTML("tr td:nth-of-type(1) a", func(e *colly.HTMLElement) {
 		//帖子标题
