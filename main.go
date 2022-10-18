@@ -40,11 +40,18 @@ func main() {
 	for {
 		select {
 		case <-ticker.C:
+			var count int8
+		again:
+			count++
 			c = initCollector()
 			err := c.Visit(group)
 			if err != nil {
 				fmt.Println("c.Visit err:", err)
-				os.Exit(1)
+				if count > 3 {
+					fmt.Println("[main] c.Visit limited")
+					os.Exit(1)
+				}
+				goto again
 			}
 		}
 	}
