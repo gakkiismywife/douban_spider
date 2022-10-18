@@ -65,7 +65,10 @@ func main() {
 }
 
 func initCollector() *colly.Collector {
-	c := colly.NewCollector(colly.AllowURLRevisit())
+	c := colly.NewCollector(
+		colly.AllowURLRevisit(),
+		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
+	)
 
 	c.OnHTML("tr td:nth-of-type(1) a", func(e *colly.HTMLElement) {
 		//帖子标题
