@@ -55,7 +55,6 @@ func main() {
 	for {
 		select {
 		case <-ticker.C:
-			process.IsFirst = false
 			err := c.Visit(group)
 			if err != nil {
 				fmt.Println("c.Visit err:", err)
