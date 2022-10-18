@@ -6,6 +6,7 @@ import (
 	"github.com/gocolly/colly/v2"
 	"github.com/gocolly/colly/v2/proxy"
 	"spider_douban/cache"
+	"spider_douban/ip"
 	"spider_douban/wechat"
 	"time"
 )
@@ -22,7 +23,7 @@ func VisitDetail(url, detailUrl, title string, start int64) {
 		return
 	}
 	c := colly.NewCollector()
-	switcher, err := proxy.RoundRobinProxySwitcher("http://119.23.218.11:16816")
+	switcher, err := proxy.RoundRobinProxySwitcher(ip.ProxyIp...)
 	if err != nil {
 		return
 	}

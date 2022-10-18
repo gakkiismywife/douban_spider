@@ -7,6 +7,7 @@ import (
 	"github.com/gocolly/colly/v2/proxy"
 	"math/rand"
 	"os"
+	"spider_douban/ip"
 	"spider_douban/process"
 	"strings"
 	"time"
@@ -57,7 +58,7 @@ func initCollector() *colly.Collector {
 		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
 	)
 
-	switcher, err := proxy.RoundRobinProxySwitcher("http://119.23.218.11:16816")
+	switcher, err := proxy.RoundRobinProxySwitcher(ip.ProxyIp...)
 	if err != nil {
 		return nil
 	}
@@ -94,6 +95,13 @@ func initCollector() *colly.Collector {
 		fmt.Println("status:", response.StatusCode)
 		fmt.Println("body:", string(response.Body))
 		fmt.Println("error:", err)
+	})
+
+	c.OnResponse(func(response *colly.Response) {
+		err := response.Save("response.txt")
+		if err != nil {
+			return
+		}
 	})
 
 	return c
