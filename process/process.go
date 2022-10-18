@@ -7,13 +7,12 @@ import (
 	"github.com/gocolly/colly/v2/proxy"
 	"spider_douban/cache"
 	"spider_douban/config"
-	"spider_douban/ip"
 	"spider_douban/wechat"
 	"time"
 )
 
 // VisitDetail 请求帖子详情
-func VisitDetail(url, detailUrl, title string) {
+func VisitDetail(url, detailUrl, title, proxyIp string) {
 	rdb := cache.GetRedisClient()
 	defer rdb.Close()
 
@@ -26,11 +25,13 @@ func VisitDetail(url, detailUrl, title string) {
 	c := colly.NewCollector(
 		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
 	)
-	switcher, err := proxy.RoundRobinProxySwitcher(ip.ProxyIp...)
-	if err != nil {
-		return
+	if proxyIp != "" {
+		switcher, err := proxy.RoundRobinProxySwitcher("http://" + proxyIp)
+		if err != nil {
+			return
+		}
+		c.SetProxyFunc(switcher)
 	}
-	c.SetProxyFunc(switcher)
 
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
 		t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)

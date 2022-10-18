@@ -31,15 +31,16 @@ func main() {
 	ticker := time.NewTicker(config.INTERVAL * time.Second)
 
 	c := initCollector()
-
 	err := c.Visit(group)
 	if err != nil {
 		fmt.Println("[main]c.Visit err:", err)
 		return
 	}
+
 	for {
 		select {
 		case <-ticker.C:
+			c = initCollector()
 			err := c.Visit(group)
 			if err != nil {
 				fmt.Println("c.Visit err:", err)
@@ -55,11 +56,16 @@ func initCollector() *colly.Collector {
 		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
 	)
 
-	switcher, err := proxy.RoundRobinProxySwitcher(ip.ProxyIp...)
-	if err != nil {
-		return nil
+	//获取代理ip
+	proxyIp := ip.GetIp()
+	if proxyIp != "" {
+		switcher, err := proxy.RoundRobinProxySwitcher("http://" + proxyIp)
+		if err != nil {
+			fmt.Println("[main]proxy.RoundRobinProxySwitcher err", err)
+			return nil
+		}
+		c.SetProxyFunc(switcher)
 	}
-	c.SetProxyFunc(switcher)
 
 	c.OnHTML("tr td:nth-of-type(1) a", func(e *colly.HTMLElement) {
 		//帖子标题
@@ -81,7 +87,7 @@ func initCollector() *colly.Collector {
 		time.Sleep(time.Second * num)
 
 		//浏览详情
-		go process.VisitDetail(group, postUrl, title)
+		go process.VisitDetail(group, postUrl, title, proxyIp)
 	})
 
 	c.OnRequest(func(r *colly.Request) {
