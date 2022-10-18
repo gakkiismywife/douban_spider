@@ -18,14 +18,15 @@ var rdb *redis.Client
 
 var ctx context.Context
 
-var visited bool
-
+//监测的小组url
 var group string
 
-var start = time.Now().Unix()
+//开始时间
+var start int64
 
 func init() {
 	flag.StringVar(&group, "group", "", "小组链接")
+	flag.Int64Var(&start, "start", time.Now().Unix(), "开始时间")
 	flag.Parse()
 
 	if group == "" {
@@ -89,7 +90,7 @@ func initCollector() *colly.Collector {
 	})
 
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Time", time.Now().Format("2006-01-02 03:04:05"), "Visiting", r.URL)
+		fmt.Println("Time", time.Now().Format("2006-01-02 15:04:05"), "Visiting", r.URL)
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
