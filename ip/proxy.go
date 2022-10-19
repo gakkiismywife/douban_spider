@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"spider_douban/config"
 )
 
 type ResponseData struct {
@@ -21,7 +22,7 @@ type ProxyResponse struct {
 }
 
 func GetOneIp() string {
-	auth := Authorization{SecretId: "945398226373963", SecretKey: "suz1i62o2invo314ouuvdfe84dyf67qc"}
+	auth := Authorization{SecretId: config.Proxy.Id, SecretKey: config.Proxy.Secret}
 	client := Client{Auth: auth}
 	params := map[string]interface{}{"format": "json"}
 	ips, err := client.GetDps(1, HmacSha1, params)
