@@ -55,10 +55,16 @@ func VisitDetail(url, detailUrl, title string) {
 		fmt.Println(fmt.Sprintf("%s has visited", detailUrl))
 		return
 	}
+	var count = 0
+begin:
+	count++
 	err = c.Visit(detailUrl)
 	if err != nil {
-		fmt.Println("[process]c.Visit err:", err)
-		return
+		if count > 3 {
+			fmt.Println("[process]c.Visit err:", err)
+			return
+		}
+		goto begin
 	}
 }
 
