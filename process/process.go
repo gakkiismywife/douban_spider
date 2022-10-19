@@ -22,11 +22,7 @@ func VisitDetail(url, detailUrl, title string) {
 		fmt.Println(fmt.Sprintf("[process]%s has visited", title))
 		return
 	}
-	c := colly.NewCollector(
-		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
-	)
-
-	c = ip.SetProxy(c)
+	c := initCollector()
 
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
 		t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
@@ -73,4 +69,14 @@ func notification(content string) {
 		return
 	}
 	wechat.SendMessage(token, content)
+}
+
+func initCollector() *colly.Collector {
+	c := colly.NewCollector(
+		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47"),
+	)
+
+	c = ip.SetProxy(c)
+
+	return c
 }
