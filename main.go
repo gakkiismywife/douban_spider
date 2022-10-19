@@ -18,8 +18,6 @@ import (
 var group string
 
 func init() {
-	fmt.Println(config.Proxy.Id)
-	os.Exit(1)
 	flag.StringVar(&group, "group", "", "小组链接")
 	flag.Parse()
 
