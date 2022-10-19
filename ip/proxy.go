@@ -63,7 +63,7 @@ func GetOneIp() string {
 		log.Println(err)
 		return ""
 	}
-	return string(ips[0])
+	return ips[0]
 }
 
 func SetProxy(c *colly.Collector) *colly.Collector {
