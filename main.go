@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"log"
 	"math/rand"
 	"os"
 	"spider_douban/config"
@@ -47,9 +48,10 @@ func main() {
 			if err != nil {
 				fmt.Println("c.Visit err:", err)
 				if count > 3 {
-					fmt.Println("[main] c.Visit limited")
+					log.Println("[main] c.Visit limited")
 					os.Exit(1)
 				}
+				time.Sleep(20 * time.Second)
 				goto again
 			}
 		}
