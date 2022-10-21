@@ -27,7 +27,7 @@ func VisitDetail(url, detailUrl, title string) {
 	c.OnHTML(".create-time.color-green", func(e *colly.HTMLElement) {
 		t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
 		publishTime := t.Unix()
-		fmt.Println(fmt.Sprintf("%s创建时间为%s", title, e.Text))
+		fmt.Println(fmt.Sprintf("[process]%s创建时间为%s", title, e.Text))
 
 		go rdb.HSet(context.Background(), url, detailUrl, title).Result() //放入缓存
 
@@ -39,11 +39,11 @@ func VisitDetail(url, detailUrl, title string) {
 
 	c.OnRequest(func(request *colly.Request) {
 		request.Headers.Set("Referer", url)
-		fmt.Println("VisitDetail:", title)
+		fmt.Println("[process]VisitDetail:", title)
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
-		fmt.Println("error status :", response.StatusCode)
+		fmt.Println("[process]error status :", response.StatusCode)
 	})
 
 	visited, err := c.HasVisited(detailUrl)
@@ -52,7 +52,7 @@ func VisitDetail(url, detailUrl, title string) {
 		return
 	}
 	if visited {
-		fmt.Println(fmt.Sprintf("%s has visited", detailUrl))
+		fmt.Println(fmt.Sprintf("[process]%s has visited", detailUrl))
 		return
 	}
 	var count = 0
@@ -64,6 +64,7 @@ begin:
 			fmt.Println("[process]c.Visit err:", err)
 			return
 		}
+		time.Sleep(5 * time.Second)
 		goto begin
 	}
 }
@@ -71,7 +72,7 @@ begin:
 func notification(content string) {
 	token := wechat.GetAccessToken("ww531df613e9b51972", "iV0r9_rU6PU1-TYQzKTmi5kTEG2RQNvFpQOEcRSvN0g")
 	if token == "" {
-		fmt.Println("获取token失败")
+		fmt.Println("[process]获取token失败")
 		return
 	}
 	wechat.SendMessage(token, content)
