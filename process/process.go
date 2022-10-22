@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"math/rand"
 	"spider_douban/cache"
 	"spider_douban/config"
 	"spider_douban/ip"
@@ -61,10 +62,11 @@ begin:
 	err = c.Visit(detailUrl)
 	if err != nil {
 		if count > 3 {
-			fmt.Println("[process]c.Visit err:", err)
+			fmt.Println(fmt.Sprintf("[process][%d]c.Visit err:%s", count, err.Error()))
 			return
 		}
-		time.Sleep(5 * time.Second)
+		i := rand.Intn(5) + 5
+		time.Sleep(time.Duration(i) * time.Second)
 		goto begin
 	}
 }
