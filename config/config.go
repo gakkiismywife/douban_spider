@@ -24,4 +24,6 @@ func init() {
 	_ = vp.UnmarshalKey("wechat", Wechat)
 	Proxy = new(proxyConfig)
 	_ = vp.UnmarshalKey("proxy", Proxy)
+	Task = new(taskConfig)
+	_ = vp.UnmarshalKey("task", Task)
 }

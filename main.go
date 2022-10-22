@@ -1,11 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/gocolly/colly/v2"
 	"math/rand"
-	"os"
 	"spider_douban/config"
 	"spider_douban/ip"
 	"spider_douban/process"
@@ -13,44 +11,34 @@ import (
 	"time"
 )
 
-//监测的小组url
-var group string
-
-func init() {
-	flag.StringVar(&group, "group", "", "小组链接")
-	flag.Parse()
-
-	if group == "" {
-		fmt.Println("请输入需要监控的小组url")
-		os.Exit(1)
-	}
-}
+var c *colly.Collector
 
 func main() {
 	ticker := time.NewTicker(config.INTERVAL * time.Second)
 
-	c := initCollector()
-	err := c.Visit(group)
-	if err != nil {
-		fmt.Println("[main]c.Visit err:", err)
-		return
-	}
+	run()
 
 	for {
 		select {
 		case <-ticker.C:
-			var count int8
+			run()
+		}
+	}
+}
+
+func run() {
+	for _, url := range config.Task.Urls {
+		go func(url string) {
 		again:
-			count++
 			c = initCollector()
-			err := c.Visit(group)
+			err := c.Visit(url)
 			if err != nil {
-				fmt.Println("c.Visit err:", err)
+				fmt.Println("[main]c.Visit err:", err)
 				i := rand.Intn(20) + 30
 				time.Sleep(time.Duration(i) * time.Second)
 				goto again
 			}
-		}
+		}(url)
 	}
 }
 
@@ -82,24 +70,17 @@ func initCollector() *colly.Collector {
 		time.Sleep(time.Second * num)
 
 		//浏览详情
-		go process.VisitDetail(group, postUrl, title)
+		go process.VisitDetail(postUrl, title)
 	})
 
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Time", time.Now().Format("2006-01-02 15:04:05"), "Visiting", r.URL)
+		fmt.Println("[main]Time", time.Now().Format("2006-01-02 15:04:05"), "Visiting", r.URL)
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
-		fmt.Println("status:", response.StatusCode)
-		fmt.Println("body:", string(response.Body))
-		fmt.Println("error:", err)
-	})
-
-	c.OnResponse(func(response *colly.Response) {
-		err := response.Save("response.txt")
-		if err != nil {
-			return
-		}
+		fmt.Println("[main]status:", response.StatusCode)
+		fmt.Println("[main]body:", string(response.Body))
+		fmt.Println("[main]error:", err)
 	})
 
 	return c

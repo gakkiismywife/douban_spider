@@ -12,12 +12,12 @@ import (
 )
 
 // VisitDetail 请求帖子详情
-func VisitDetail(url, detailUrl, title string) {
+func VisitDetail(detailUrl, title string) {
 	rdb := cache.GetRedisClient()
 	defer rdb.Close()
 
 	//判断是否请求过
-	isVisited := rdb.HExists(context.Background(), url, detailUrl).Val()
+	isVisited := rdb.HExists(context.Background(), config.Task.Home, detailUrl).Val()
 	if isVisited {
 		fmt.Println(fmt.Sprintf("[process]%s has visited", title))
 		return
@@ -29,7 +29,7 @@ func VisitDetail(url, detailUrl, title string) {
 		publishTime := t.Unix()
 		fmt.Println(fmt.Sprintf("[process]%s创建时间为%s", title, e.Text))
 
-		go rdb.HSet(context.Background(), url, detailUrl, title).Result() //放入缓存
+		go rdb.HSet(context.Background(), config.Task.Home, detailUrl, title).Result() //放入缓存
 
 		if time.Now().Unix()-publishTime < config.INTERVAL && !isVisited {
 			message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", title, detailUrl, e.Text)
@@ -38,7 +38,7 @@ func VisitDetail(url, detailUrl, title string) {
 	})
 
 	c.OnRequest(func(request *colly.Request) {
-		request.Headers.Set("Referer", url)
+		request.Headers.Set("Referer", config.Task.Home)
 		fmt.Println("[process]VisitDetail:", title)
 	})
 
