@@ -70,7 +70,7 @@ begin:
 }
 
 func notification(content string) {
-	token := wechat.GetAccessToken("ww531df613e9b51972", "iV0r9_rU6PU1-TYQzKTmi5kTEG2RQNvFpQOEcRSvN0g")
+	token := wechat.GetAccessToken(config.Wechat.Key, config.Wechat.Secret)
 	if token == "" {
 		fmt.Println("[process]获取token失败")
 		return
