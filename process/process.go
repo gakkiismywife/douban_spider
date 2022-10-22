@@ -31,7 +31,7 @@ func VisitDetail(detailUrl, title string) {
 
 		go rdb.HSet(context.Background(), config.Task.Home, detailUrl, title).Result() //放入缓存
 
-		if time.Now().Unix()-publishTime < config.INTERVAL && !isVisited {
+		if time.Now().Unix()-publishTime < (config.INTERVAL*2) && !isVisited {
 			message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", title, detailUrl, e.Text)
 			go notification(message) // 触发通知
 		}
