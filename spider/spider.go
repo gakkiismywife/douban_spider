@@ -28,7 +28,7 @@ func NewTask(flag, url string) *Task {
 	return &Task{
 		Url:   url,
 		Flag:  flag,
-		c:     colly.NewCollector(),
+		c:     c,
 		State: true,
 	}
 }
