@@ -51,12 +51,13 @@ func VisitDetail(detailUrl, title string) {
 begin:
 	count++
 	err := c.Visit(detailUrl)
+	c.Wait()
 	if err != nil {
 		if count > 3 {
 			fmt.Println(fmt.Sprintf("[process][%d]c.Visit err:%s", count, err.Error()))
 			return
 		}
-		i := rand.Intn(5) + 5
+		i := rand.Intn(10) + 10
 		time.Sleep(time.Duration(i) * time.Second)
 		goto begin
 	}

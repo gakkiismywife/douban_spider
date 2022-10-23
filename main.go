@@ -14,6 +14,8 @@ import (
 
 var c *colly.Collector
 
+var success bool
+
 func main() {
 	ticker := time.NewTicker(config.INTERVAL * time.Second)
 
@@ -30,10 +32,11 @@ func main() {
 func run() {
 	for _, url := range config.Task.Urls {
 	again:
+		success = true
 		c = initCollector()
 		err := c.Visit(url)
 		c.Wait()
-		if err != nil {
+		if err != nil || success == false {
 			fmt.Println("[main]c.Visit err:", err)
 			i := rand.Intn(20) + 30
 			time.Sleep(time.Duration(i) * time.Second)
@@ -85,6 +88,15 @@ func initCollector() *colly.Collector {
 		fmt.Println("[main]status:", response.StatusCode)
 		fmt.Println("[main]body:", string(response.Body))
 		fmt.Println("[main]error:", err)
+	})
+
+	c.OnResponse(func(response *colly.Response) {
+		body := string(response.Body)
+		//判断响应是否正常
+		if !strings.Contains(body, "td") {
+			log.Println("[main]response body err:", body)
+			success = false
+		}
 	})
 
 	return c
