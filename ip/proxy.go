@@ -1,13 +1,13 @@
 package ip
 
 import (
-	"fmt"
 	"github.com/gocolly/colly/v2"
-	"github.com/gocolly/colly/v2/proxy"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"spider_douban/config"
+	"time"
 )
 
 type ResponseData struct {
@@ -34,18 +34,13 @@ func GetOneIp() string {
 }
 
 func SetProxy(c *colly.Collector) *colly.Collector {
-	switcher, err := proxy.RoundRobinProxySwitcher("http://t11666754707153:qzgfe0ed@tps163.kdlapi.com:15818")
-	if err != nil {
-		fmt.Println("[main]proxy.RoundRobinProxySwitcher err", err)
-		return c
-	}
-
-	u, _ := url.Parse("http://t11666754707153:qzgfe0ed@tps163.kdlapi.com:15818")
-	//u.User = url.UserPassword("admin", "o4hwvwob")
+	u, _ := url.Parse(config.Proxy.Tunnel)
 	transport := &http.Transport{
 		Proxy: http.ProxyURL(u),
+		DialContext: (&net.Dialer{
+			Timeout: 10 * time.Second,
+		}).DialContext,
 	}
 	c.WithTransport(transport)
-	c.SetProxyFunc(switcher)
 	return c
 }
