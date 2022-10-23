@@ -73,9 +73,7 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 }
 
 func (l *ListTask) requestHandle(request *colly.Request) {
-
-	datetime := time.Now().Format("2006-01-02 15:04:05")
-	log.Println(fmt.Sprintf("[%s]Time %s Visiting:%s", l.Flag, datetime, l.Url))
+	log.Println(fmt.Sprintf("[%s]Visiting:%s", l.Flag, l.Url))
 }
 
 func (l *ListTask) responseHandle(response *colly.Response) {
