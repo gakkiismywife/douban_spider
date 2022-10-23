@@ -71,7 +71,7 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 }
 
 func (l *ListTask) requestHandle(request *colly.Request) {
-	log.Println(fmt.Sprintf("[%s]Visiting:%s", l.Flag, l.Url))
+	log.Println(fmt.Sprintf("[%s] Visiting %s", l.Flag, l.Url))
 }
 
 func (l *ListTask) responseHandle(response *colly.Response) {

@@ -40,7 +40,7 @@ func (p *pageTask) htmlHandle(e *colly.HTMLElement) {
 	defer rdb.Close()
 	go rdb.HSet(context.Background(), config.Task.Home, p.Url, p.Title).Result() //放入缓存
 
-	if time.Now().Unix()-publishTime < (config.INTERVAL * 2) {
+	if time.Now().Unix()-publishTime < 1200 {
 		go send(p.Title, p.Url, e.Text)
 	}
 }
@@ -54,7 +54,7 @@ func (p *pageTask) responseHandle(response *colly.Response) {
 	body := string(response.Body)
 	//判断响应是否正常
 	if !strings.Contains(body, "create-time") {
-		log.Println(fmt.Sprintf("[%s]response body err:%s", p.Flag, body))
+		log.Println(fmt.Sprintf("[%s] Response body err: %s,Title: ", p.Flag, p.Title))
 		p.State = false
 	} else {
 		p.State = true
