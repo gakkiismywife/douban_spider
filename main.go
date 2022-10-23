@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"log"
 	"math/rand"
 	"spider_douban/config"
 	"spider_douban/ip"
@@ -28,17 +29,16 @@ func main() {
 
 func run() {
 	for _, url := range config.Task.Urls {
-		go func(url string) {
-		again:
-			c = initCollector()
-			err := c.Visit(url)
-			if err != nil {
-				fmt.Println("[main]c.Visit err:", err)
-				i := rand.Intn(20) + 30
-				time.Sleep(time.Duration(i) * time.Second)
-				goto again
-			}
-		}(url)
+	again:
+		c = initCollector()
+		err := c.Visit(url)
+		c.Wait()
+		if err != nil {
+			fmt.Println("[main]c.Visit err:", err)
+			i := rand.Intn(20) + 30
+			time.Sleep(time.Duration(i) * time.Second)
+			goto again
+		}
 	}
 }
 
@@ -61,6 +61,10 @@ func initCollector() *colly.Collector {
 		if !filter {
 			return
 		}
+
+		//打印爬取到的帖子标题和时间
+		now := time.Now().Format("2006-01-02 15:04:05")
+		log.Println(fmt.Sprintf("[main]time:%s,title:%s", now, title))
 
 		//链接
 		postUrl := e.Attr("href")

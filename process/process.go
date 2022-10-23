@@ -44,22 +44,13 @@ func VisitDetail(detailUrl, title string) {
 	})
 
 	c.OnError(func(response *colly.Response, err error) {
-		fmt.Println("[process]error status :", response.StatusCode)
+		fmt.Println(fmt.Sprintf("[process]title:%s,error status :%d", title, response.StatusCode))
 	})
 
-	visited, err := c.HasVisited(detailUrl)
-	if err != nil {
-		fmt.Println("[process]c.HasVisited err:", err)
-		return
-	}
-	if visited {
-		fmt.Println(fmt.Sprintf("[process]%s has visited", detailUrl))
-		return
-	}
 	var count = 0
 begin:
 	count++
-	err = c.Visit(detailUrl)
+	err := c.Visit(detailUrl)
 	if err != nil {
 		if count > 3 {
 			fmt.Println(fmt.Sprintf("[process][%d]c.Visit err:%s", count, err.Error()))
