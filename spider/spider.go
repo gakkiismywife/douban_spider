@@ -15,6 +15,7 @@ type Task struct {
 	OnRequest  colly.RequestCallback
 	OnResponse colly.ResponseCallback
 	OnHtml     colly.HTMLCallback
+	State      bool
 }
 
 func NewTask(flag, url string) *Task {
@@ -25,9 +26,10 @@ func NewTask(flag, url string) *Task {
 
 	c = ip.SetProxy(c)
 	return &Task{
-		Url:  url,
-		Flag: flag,
-		c:    colly.NewCollector(),
+		Url:   url,
+		Flag:  flag,
+		c:     colly.NewCollector(),
+		State: true,
 	}
 }
 
@@ -52,7 +54,7 @@ func (t *Task) Run(times int8) {
 		for times > 0 {
 			err := t.c.Visit(t.Url)
 			t.c.Wait()
-			if err != nil {
+			if err != nil || t.State == false {
 				time.Sleep(getSleepSecond(10, 20))
 				times--
 			}

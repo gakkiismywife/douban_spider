@@ -8,6 +8,7 @@ import (
 	"spider_douban/cache"
 	"spider_douban/config"
 	"spider_douban/wechat"
+	"strings"
 	"time"
 )
 
@@ -50,7 +51,14 @@ func (p *pageTask) requestHandle(request *colly.Request) {
 }
 
 func (p *pageTask) responseHandle(response *colly.Response) {
-
+	body := string(response.Body)
+	//判断响应是否正常
+	if !strings.Contains(body, "create-time") {
+		log.Println(fmt.Sprintf("[%s]response body err:%s", p.Flag, body))
+		p.State = false
+	} else {
+		p.State = true
+	}
 }
 
 func send(title, url, publishTime string) {

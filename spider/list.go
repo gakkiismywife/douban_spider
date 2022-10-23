@@ -15,7 +15,6 @@ import (
 type ListTask struct {
 	*Task
 	Filters []string
-	State   bool
 }
 
 func NewListTask(flag, url string, filters []string) *ListTask {
@@ -23,7 +22,6 @@ func NewListTask(flag, url string, filters []string) *ListTask {
 	l := &ListTask{
 		Task:    nil,
 		Filters: filters,
-		State:   true,
 	}
 	t.SetRequestCallback(l.requestHandle)
 	t.SetHtmlCallback("tr td:nth-of-type(1) a", l.htmlHandle)
@@ -80,7 +78,9 @@ func (l *ListTask) responseHandle(response *colly.Response) {
 	body := string(response.Body)
 	//判断响应是否正常
 	if !strings.Contains(body, "td") {
-		log.Println("[main]response body err:", body)
+		log.Println(fmt.Sprintf("[%s]response body err:%s", l.Flag, body))
 		l.State = false
+	} else {
+		l.State = true
 	}
 }
