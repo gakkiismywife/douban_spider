@@ -1,7 +1,6 @@
 package spider
 
 import (
-	"fmt"
 	"github.com/gocolly/colly/v2"
 	"math/rand"
 	"spider_douban/ip"
@@ -70,7 +69,6 @@ func (t *Task) Run(times int8) {
 	begin:
 		err := t.c.Visit(t.Url)
 		t.c.Wait()
-		fmt.Println(err, t.State)
 		if err != nil || t.State == false {
 			time.Sleep(getSleepSecond(10, 20))
 			goto begin
