@@ -1,7 +1,9 @@
 package spider
 
 import (
+	"fmt"
 	"github.com/gocolly/colly/v2"
+	"log"
 	"math/rand"
 	"spider_douban/ip"
 	"time"
@@ -72,6 +74,8 @@ func (t *Task) Run(times int8) {
 		if err != nil || t.State == false {
 			time.Sleep(getSleepSecond(10, 20))
 			goto begin
+		} else {
+			log.Println(fmt.Sprintf("[%s] Task finished", t.Flag))
 		}
 	}
 }
