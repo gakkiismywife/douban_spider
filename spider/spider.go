@@ -49,6 +49,11 @@ func (t *Task) SetResponseCallback(f colly.ResponseCallback) {
 	t.c.OnResponse(f)
 }
 
+// SetErrorCallback 设置失败回调
+func (t *Task) SetErrorCallback(f colly.ErrorCallback) {
+	t.c.OnError(f)
+}
+
 // Run 运行
 func (t *Task) Run(times int8) {
 	if times > 0 {

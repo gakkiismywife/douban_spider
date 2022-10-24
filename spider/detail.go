@@ -27,6 +27,7 @@ func NewPageTask(flag, url, title string) *pageTask {
 	t.SetHtmlCallback(".create-time.color-green", p.htmlHandle)
 	t.SetRequestCallback(p.requestHandle)
 	t.SetResponseCallback(p.responseHandle)
+	t.SetErrorCallback(p.errorHandle)
 	p.Task = t
 	return p
 }
@@ -62,6 +63,12 @@ func (p *pageTask) responseHandle(response *colly.Response) {
 	} else {
 		p.State = true
 	}
+}
+
+func (p *pageTask) errorHandle(response *colly.Response, err error) {
+	rbd := cache.GetRedisClient()
+	defer rbd.Close()
+	rbd.HDel(context.Background(), config.Task.Home, p.Url)
 }
 
 func Send(title, url, publishTime string) {
