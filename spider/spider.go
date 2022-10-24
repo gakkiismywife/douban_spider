@@ -72,7 +72,7 @@ func (t *Task) Run(times int8) {
 		err := t.c.Visit(t.Url)
 		t.c.Wait()
 		if err != nil || t.State == false {
-			time.Sleep(getSleepSecond(10, 20))
+			time.Sleep(10 * time.Second)
 			goto begin
 		} else {
 			log.Println(fmt.Sprintf("[%s] Task finished", t.Flag))

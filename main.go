@@ -22,6 +22,6 @@ func main() {
 func run() {
 	for _, url := range config.Task.Urls {
 		l := spider.NewListTask("list", url, []string{"【作业】"})
-		l.Run(-1)
+		l.Run(15)
 	}
 }
