@@ -37,10 +37,6 @@ func (p *pageTask) htmlHandle(e *colly.HTMLElement) {
 	publishTime := t.Unix()
 	log.Println(fmt.Sprintf("[%s]%s 创建时间为%s", p.Flag, p.Title, e.Text))
 
-	rdb := cache.GetRedisClient()
-	defer rdb.Close()
-	go rdb.HSet(context.Background(), config.Task.Home, p.Url, p.Title).Result() //放入缓存
-
 	if time.Now().Unix()-publishTime < int64(config.Task.Seconds) {
 		go Send(p.Title, p.Url, e.Text)
 	}

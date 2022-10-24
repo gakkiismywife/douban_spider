@@ -56,6 +56,9 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 		return
 	}
 
+	//放入缓存
+	rdb.HSet(context.Background(), config.Task.Home, l.Url, title).Result()
+
 	//随机sleep 3到5秒
 	num := time.Duration(rand.Intn(3) + 3)
 	time.Sleep(time.Second * num)
