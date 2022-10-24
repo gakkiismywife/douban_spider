@@ -56,6 +56,9 @@ func (p *pageTask) responseHandle(response *colly.Response) {
 	if !strings.Contains(body, "create-time") {
 		log.Println(fmt.Sprintf("[%s] Response body err: %s,Title: ", p.Flag, p.Title))
 		p.State = false
+		rbd := cache.GetRedisClient()
+		defer rbd.Close()
+		rbd.HDel(context.Background(), config.Task.Home, p.Url)
 	} else {
 		p.State = true
 	}
