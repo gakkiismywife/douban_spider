@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gocolly/colly/v2"
 	"log"
-	"math/rand"
 	"spider_douban/cache"
 	"spider_douban/config"
 	"strings"
@@ -57,11 +56,9 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 	}
 
 	//放入缓存
-	rdb.HSet(context.Background(), config.Task.Home, l.Url, title).Result()
+	rdb.HSet(context.Background(), config.Task.Home, postUrl, title).Result()
 
-	//随机sleep 3到5秒
-	num := time.Duration(rand.Intn(3) + 3)
-	time.Sleep(time.Second * num)
+	time.Sleep(3 * time.Second)
 
 	//浏览详情
 	go func() {
