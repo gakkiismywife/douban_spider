@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"fmt"
 	"github.com/gocolly/colly/v2"
 	"math/rand"
 	"spider_douban/ip"
@@ -54,14 +55,17 @@ func (t *Task) Run(times int8) {
 		for ; times > 0; times-- {
 			err := t.c.Visit(t.Url)
 			t.c.Wait()
-			if err != nil || t.State == false {
+			if t.State == false || err != nil {
 				time.Sleep(getSleepSecond(10, 20))
+			} else {
+				break
 			}
 		}
 	} else {
 	begin:
 		err := t.c.Visit(t.Url)
 		t.c.Wait()
+		fmt.Println(err, t.State)
 		if err != nil || t.State == false {
 			time.Sleep(getSleepSecond(10, 20))
 			goto begin

@@ -41,13 +41,13 @@ func (p *pageTask) htmlHandle(e *colly.HTMLElement) {
 	go rdb.HSet(context.Background(), config.Task.Home, p.Url, p.Title).Result() //放入缓存
 
 	if time.Now().Unix()-publishTime < 1200 {
-		go send(p.Title, p.Url, e.Text)
+		go Send(p.Title, p.Url, e.Text)
 	}
 }
 
 func (p *pageTask) requestHandle(request *colly.Request) {
 	request.Headers.Set("Referer", config.Task.Home)
-	log.Println(fmt.Sprintf("[%s]Visiting:%s", p.Flag, p.Title))
+	log.Println(fmt.Sprintf("[%s] Visiting:%s", p.Flag, p.Title))
 }
 
 func (p *pageTask) responseHandle(response *colly.Response) {
@@ -61,7 +61,7 @@ func (p *pageTask) responseHandle(response *colly.Response) {
 	}
 }
 
-func send(title, url, publishTime string) {
+func Send(title, url, publishTime string) {
 	message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", title, url, publishTime)
 	token := wechat.GetAccessToken(config.Wechat.Key, config.Wechat.Secret)
 	if token == "" {
