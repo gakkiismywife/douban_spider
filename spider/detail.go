@@ -35,7 +35,7 @@ func NewPageTask(flag, url, title string) *pageTask {
 func (p *pageTask) htmlHandle(e *colly.HTMLElement) {
 	t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
 	publishTime := t.Unix()
-	log.Println(fmt.Sprintf("[%s]%s创建时间为%s", p.Flag, p.Title, e.Text))
+	log.Println(fmt.Sprintf("[%s]%s 创建时间为%s", p.Flag, p.Title, e.Text))
 
 	rdb := cache.GetRedisClient()
 	defer rdb.Close()
@@ -55,7 +55,7 @@ func (p *pageTask) responseHandle(response *colly.Response) {
 	body := string(response.Body)
 	//判断响应是否正常
 	if !strings.Contains(body, "create-time") {
-		log.Println(fmt.Sprintf("[%s] Response body err: %s,Title: ", p.Flag, p.Title))
+		log.Println(fmt.Sprintf("[%s]%sResponse body err ", p.Flag, p.Title))
 		p.State = false
 		rbd := cache.GetRedisClient()
 		defer rbd.Close()

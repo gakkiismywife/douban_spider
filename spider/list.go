@@ -43,9 +43,6 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 		}
 	}
 
-	//打印爬取到的帖子标题和时间
-	log.Println(fmt.Sprintf("[%s]%s", l.Flag, title))
-
 	//链接
 	postUrl := e.Attr("href")
 
@@ -78,7 +75,7 @@ func (l *ListTask) responseHandle(response *colly.Response) {
 	body := string(response.Body)
 	//判断响应是否正常
 	if !strings.Contains(body, "td") {
-		log.Println(fmt.Sprintf("[%s]response body err:%s", l.Flag, body))
+		log.Println(fmt.Sprintf("[%s] Response body err", l.Flag))
 		l.State = false
 	} else {
 		l.State = true
