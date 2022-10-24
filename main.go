@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	ticker := time.NewTicker(config.INTERVAL * time.Second)
+	ticker := time.NewTicker(time.Duration(config.Task.Interval) * time.Second)
 
 	run()
 
