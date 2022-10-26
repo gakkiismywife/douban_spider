@@ -63,7 +63,7 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 	//浏览详情
 	go func() {
 		p := NewPageTask("detail", postUrl, title)
-		p.Run(3)
+		schedule <- p
 	}()
 }
 

@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	go spider.RunSchedule()
 	ticker := time.NewTicker(time.Duration(config.Task.Interval) * time.Second)
 
 	run()
