@@ -71,6 +71,7 @@ func (p *pageTask) errorHandle(response *colly.Response, err error) {
 func (p *pageTask) Send(publishTime string) {
 	if db.HasSend(p.Title, p.Url) {
 		log.Println(fmt.Sprintf("[%s] %s已经发送过消息", p.Flag, p.Title))
+		return
 	}
 	message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", p.Title, p.Url, publishTime)
 	token := wechat.GetAccessToken(config.Wechat.Key, config.Wechat.Secret)
