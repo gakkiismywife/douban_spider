@@ -26,4 +26,6 @@ func init() {
 	_ = vp.UnmarshalKey("proxy", Proxy)
 	Task = new(taskConfig)
 	_ = vp.UnmarshalKey("task", Task)
+	Database = new(DatabaseConfig)
+	_ = vp.UnmarshalKey("database", Database)
 }

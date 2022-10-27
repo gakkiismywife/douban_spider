@@ -1,9 +1,11 @@
 package db
 
 import (
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"spider_douban/config"
 	"time"
 )
 
@@ -20,7 +22,16 @@ func init() {
 }
 
 func SetupDb() *gorm.DB {
-	dsn := "root:qweqwe@tcp(120.78.67.238:3306)/spider?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%s&loc=Local",
+		config.Database.Username,
+		config.Database.Password,
+		config.Database.Host,
+		config.Database.Port,
+		config.Database.DbName,
+		config.Database.Charset,
+		config.Database.ParseTime,
+	)
 	Db, _ := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	db, err := Db.DB()
