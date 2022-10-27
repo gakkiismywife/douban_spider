@@ -7,6 +7,7 @@ import (
 	"log"
 	"spider_douban/cache"
 	"spider_douban/config"
+	"spider_douban/db"
 	"spider_douban/wechat"
 	"strings"
 	"time"
@@ -38,7 +39,7 @@ func (p *pageTask) htmlHandle(e *colly.HTMLElement) {
 	log.Println(fmt.Sprintf("[%s]%s 创建时间为%s", p.Flag, p.Title, e.Text))
 
 	if time.Now().Unix()-publishTime < int64(config.Task.Seconds) {
-		go Send(p.Title, p.Url, e.Text)
+		go p.Send(e.Text)
 	}
 }
 
@@ -67,12 +68,16 @@ func (p *pageTask) errorHandle(response *colly.Response, err error) {
 	rbd.HDel(context.Background(), config.Task.Home, p.Url)
 }
 
-func Send(title, url, publishTime string) {
-	message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", title, url, publishTime)
+func (p *pageTask) Send(publishTime string) {
+	if db.HasSend(p.Title, p.Url) {
+		log.Println(fmt.Sprintf("[%s] %s已经发送过消息", p.Flag, p.Title))
+	}
+	message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", p.Title, p.Url, publishTime)
 	token := wechat.GetAccessToken(config.Wechat.Key, config.Wechat.Secret)
 	if token == "" {
-		log.Println("[process]获取token失败")
+		log.Println(fmt.Sprintf("[%s]获取token失败", p.Flag))
 		return
 	}
+	db.CreateMessage(p.Title, p.Url)
 	wechat.SendMessage(token, message)
 }
