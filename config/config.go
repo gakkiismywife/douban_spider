@@ -28,4 +28,6 @@ func init() {
 	_ = vp.UnmarshalKey("task", Task)
 	Database = new(DatabaseConfig)
 	_ = vp.UnmarshalKey("database", Database)
+	Service = new(ServiceConfig)
+	_ = vp.UnmarshalKey("service",Service)
 }
