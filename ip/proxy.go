@@ -34,6 +34,9 @@ func GetOneIp() string {
 }
 
 func SetProxy(c *colly.Collector) *colly.Collector {
+	if config.Proxy.Tunnel == "" {
+		return c
+	}
 	switcher, err := proxy.RoundRobinProxySwitcher(config.Proxy.Tunnel)
 	if err != nil {
 		fmt.Println("[main]proxy.RoundRobinProxySwitcher err", err)
