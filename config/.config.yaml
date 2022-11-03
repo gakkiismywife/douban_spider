@@ -1,0 +1,33 @@
+proxy:
+  id: ""
+  secret: ""
+  tunnel: ""
+wechat:
+  key: ""
+  secret: ""
+  agentId: ""
+task:
+  home: "https://www.douban.com/group/698716"
+  urls:
+    - "https://www.douban.com/group/698716/discussion?start=0&type=new"
+    - "https://www.douban.com/group/698716/discussion?start=25&type=new"
+    - "https://www.douban.com/group/698716/discussion?start=50&type=new"
+  interval: 300
+  seconds: 1800
+database:
+  host: "120.78.67.238"
+  port: 3306
+  username: "root"
+  password: "qweqwe"
+  dbName: "spider"
+  charset: "utf8mb4"
+  parseTime: True
+  maxOpen: 5
+  maxIdle: 2
+  maxIdleTime: 1
+redis:
+  host: ""
+  port:
+  auth: ""
+service:
+  maxRetryTimes: 15

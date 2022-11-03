@@ -1,11 +1,15 @@
 package cache
 
-import "github.com/go-redis/redis/v8"
+import (
+	"fmt"
+	"github.com/go-redis/redis/v8"
+	"spider_douban/config"
+)
 
 func GetRedisClient() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Addr:     "120.78.67.238:6379",
-		Password: "woaini1!",
+		Addr:     fmt.Sprintf("%s:%d", config.RedisSetting.Host, config.RedisSetting.Port),
+		Password: config.RedisSetting.Auth,
 		DB:       0,
 	})
 }

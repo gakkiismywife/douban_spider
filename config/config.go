@@ -29,5 +29,7 @@ func init() {
 	Database = new(DatabaseConfig)
 	_ = vp.UnmarshalKey("database", Database)
 	Service = new(ServiceConfig)
-	_ = vp.UnmarshalKey("service",Service)
+	_ = vp.UnmarshalKey("service", Service)
+	RedisSetting = new(RedisConfig)
+	_ = vp.UnmarshalKey("redis", RedisSetting)
 }

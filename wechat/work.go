@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"spider_douban/cache"
+	"spider_douban/config"
 	"strings"
 	"time"
 )
@@ -31,7 +32,7 @@ func NewMessageRequest(content string) *MessageRequest {
 	return &MessageRequest{
 		ToUser:      "@all",
 		MessageType: "text",
-		AgentId:     "1000002",
+		AgentId:     config.Wechat.AgentId,
 		Text:        m,
 	}
 }
