@@ -15,11 +15,11 @@ task:
   interval: 300
   seconds: 1800
 database:
-  host: "120.78.67.238"
+  host: ""
   port: 3306
   username: "root"
-  password: "qweqwe"
-  dbName: "spider"
+  password: ""
+  dbName: ""
   charset: "utf8mb4"
   parseTime: True
   maxOpen: 5
