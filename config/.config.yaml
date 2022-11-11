@@ -14,6 +14,8 @@ task:
     - "https://www.douban.com/group/698716/discussion?start=50&type=new"
   interval: 300
   seconds: 1800
+  filterWords:
+      - "【作业】"
 database:
   host: ""
   port: 3306
