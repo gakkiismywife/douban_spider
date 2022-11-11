@@ -9,8 +9,6 @@ import (
 )
 
 func main() {
-    fmt.Println(config.Task.FilterWords)
-    os.Exit(1)
 	go spider.RunSchedule()
 	ticker := time.NewTicker(time.Duration(config.Task.Interval) * time.Second)
 
