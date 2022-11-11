@@ -1,8 +1,6 @@
 package main
 
 import (
-    "fmt"
-    "os"
     "spider_douban/config"
 	"spider_douban/spider"
 	"time"
