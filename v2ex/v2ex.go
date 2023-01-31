@@ -50,14 +50,13 @@ func Run() {
 
 	defer response.Body.Close()
 
-	resp := new(Response)
-
 	all, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("[v2ex]read failed,err : %v", err.Error())
 		return
 	}
 
+	resp := new(Response)
 	err = json.Unmarshal(all, resp)
 	if err != nil {
 		log.Printf("[v2ex]json decode failed,err : %v", err.Error())
@@ -72,7 +71,7 @@ func Run() {
 
 	now := carbon.Now().Timestamp()
 	for _, i := range resp.Result {
-		if last != 0 && last > now {
+		if last != 0 && last > i.Created {
 			log.Println(fmt.Sprintf("[v2ex]old topic ,name:%s,url:%s,time:%s", i.Title, i.Url, carbon.CreateFromTimestamp(i.Created).ToDateTimeString()))
 			continue
 		}
