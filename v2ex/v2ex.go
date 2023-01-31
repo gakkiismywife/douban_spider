@@ -12,7 +12,6 @@ import (
 	"net/url"
 	"spider_douban/cache"
 	"spider_douban/config"
-	"spider_douban/db"
 	"spider_douban/wechat"
 )
 
@@ -74,9 +73,7 @@ func Run() {
 			log.Println(fmt.Sprintf("[v2ex]old topic ,name:%s,url:%s,time:%s", i.Title, i.Url, carbon.CreateFromTimestamp(i.Created).ToDateTimeString()))
 			continue
 		}
-		db.CreateMessage(i.Title, i.Url)
-		t := carbon.CreateFromTimestamp(i.Created)
-		wechat.SendMessage(wechatToken, i.GenerateMessage(i.Title, i.Url, t.ToDateTimeString()))
+		wechat.SendMessage(wechatToken, i.GenerateMessage(i.Title, i.Url, carbon.CreateFromTimestamp(i.Created).ToDateTimeString()))
 	}
 
 	//更新上次请求时间
