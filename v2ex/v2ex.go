@@ -31,8 +31,6 @@ func (i *Item) GenerateMessage(title, url, time string) string {
 }
 
 func Run() {
-	v2exUrl := "https://www.v2ex.com/api/v2/nodes/all4all/topics"
-	token := "Bearer 9a46d720-6864-4f90-8759-bbcc2ce0815d"
 
 	proxyUrl, _ := url.Parse("http://127.0.0.1:7890")
 	client := &http.Client{
@@ -40,9 +38,9 @@ func Run() {
 			Proxy: http.ProxyURL(proxyUrl),
 		},
 	}
-	request, _ := http.NewRequest("GET", v2exUrl, nil)
+	request, _ := http.NewRequest("GET", config.V2ex.Url, nil)
 
-	request.Header.Add("Authorization", token)
+	request.Header.Add("Authorization", config.V2ex.Token)
 
 	response, err := client.Do(request)
 	if err != nil {

@@ -32,4 +32,6 @@ func init() {
 	_ = vp.UnmarshalKey("service", Service)
 	RedisSetting = new(RedisConfig)
 	_ = vp.UnmarshalKey("redis", RedisSetting)
+	V2ex = new(V2exConfig)
+	_ = vp.UnmarshalKey("v2ex", V2ex)
 }
