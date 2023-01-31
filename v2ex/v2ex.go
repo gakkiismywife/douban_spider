@@ -69,7 +69,6 @@ func Run() {
 	last, _ := rc.Get(context.Background(), "v2ex_last_request").Int64()
 	wechatToken := wechat.GetAccessToken(config.Wechat.Key, config.Wechat.Secret)
 
-	now := carbon.Now().Timestamp()
 	for _, i := range resp.Result {
 		if last != 0 && last > i.Created {
 			log.Println(fmt.Sprintf("[v2ex]old topic ,name:%s,url:%s,time:%s", i.Title, i.Url, carbon.CreateFromTimestamp(i.Created).ToDateTimeString()))
@@ -81,5 +80,5 @@ func Run() {
 	}
 
 	//更新上次请求时间
-	rc.Set(context.Background(), "v2ex_last_request", now, redis.KeepTTL)
+	rc.Set(context.Background(), "v2ex_last_request", carbon.Now().Timestamp(), redis.KeepTTL)
 }
