@@ -18,6 +18,10 @@ type pageTask struct {
 	Title string
 }
 
+func (p *pageTask) GenerateMessage(title, url, time string) string {
+	return fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", title, url, time)
+}
+
 func NewPageTask(flag, url, title string) *pageTask {
 	t := NewTask(flag, url)
 
@@ -73,7 +77,7 @@ func (p *pageTask) Send(publishTime string) {
 		log.Println(fmt.Sprintf("[%s] %s已经发送过消息", p.Flag, p.Title))
 		return
 	}
-	message := fmt.Sprintf("监测到新的帖子\n标题：%s\n链接：%s\n发布时间：%s", p.Title, p.Url, publishTime)
+	message := p.GenerateMessage(p.Title, p.Url, publishTime)
 	token := wechat.GetAccessToken(config.Wechat.Key, config.Wechat.Secret)
 	if token == "" {
 		log.Println(fmt.Sprintf("[%s]获取token失败", p.Flag))
