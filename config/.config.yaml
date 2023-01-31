@@ -35,4 +35,4 @@ service:
   maxRetryTimes: 15
 v2ex:
   url: "https://www.v2ex.com/api/v2/nodes/all4all/topics"
-  token: "Bearer 9a46d720-6864-4f90-8759-bbcc2ce0815d"
+  token: ""
