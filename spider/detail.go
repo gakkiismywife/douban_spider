@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"github.com/golang-module/carbon/v2"
 	"log"
 	"spider_douban/cache"
 	"spider_douban/config"
 	"spider_douban/db"
 	"spider_douban/wechat"
 	"strings"
-	"time"
 )
 
 type pageTask struct {
@@ -38,11 +38,10 @@ func NewPageTask(flag, url, title string) *pageTask {
 }
 
 func (p *pageTask) htmlHandle(e *colly.HTMLElement) {
-	t, _ := time.ParseInLocation("2006-01-02 15:04:05", e.Text, time.Local)
-	publishTime := t.Unix()
+	t := carbon.Parse(e.Text)
 	log.Println(fmt.Sprintf("[%s]%s 创建时间为%s", p.Flag, p.Title, e.Text))
 
-	if time.Now().Unix()-publishTime < int64(config.Task.Seconds) {
+	if carbon.Now().DiffAbsInSeconds(t) < int64(config.Task.Seconds) {
 		go p.Send(e.Text)
 	}
 }
