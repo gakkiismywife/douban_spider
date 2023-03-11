@@ -31,6 +31,7 @@ func (i *Item) GenerateMessage(title, url, time string) string {
 
 func Run() {
 
+	//设置代理
 	proxyUrl, _ := url.Parse("http://127.0.0.1:7890")
 	client := &http.Client{
 		Transport: &http.Transport{
