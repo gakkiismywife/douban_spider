@@ -34,7 +34,6 @@ func GetOneIp() string {
 }
 
 func SetProxy(c *colly.Collector) *colly.Collector {
-	fmt.Println(config.Proxy.Tunnel)
 	if config.Proxy.Tunnel == "" {
 		return c
 	}
@@ -45,7 +44,6 @@ func SetProxy(c *colly.Collector) *colly.Collector {
 	}
 
 	u, _ := url.Parse(config.Proxy.Tunnel)
-	//u.User = url.UserPassword("admin", "o4hwvwob")
 	transport := &http.Transport{
 		Proxy: http.ProxyURL(u),
 	}
