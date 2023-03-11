@@ -34,6 +34,7 @@ func GetOneIp() string {
 }
 
 func SetProxy(c *colly.Collector) *colly.Collector {
+	fmt.Println(config.Proxy.Tunnel)
 	if config.Proxy.Tunnel == "" {
 		return c
 	}
