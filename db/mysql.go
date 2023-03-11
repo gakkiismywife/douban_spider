@@ -39,8 +39,8 @@ func SetupDb() *gorm.DB {
 		log.Println("mysql connect error", err)
 		return nil
 	}
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(2)
+	db.SetMaxOpenConns(config.Database.MaxOpen)
+	db.SetMaxIdleConns(config.Database.MaxIdle)
 	db.SetConnMaxIdleTime(time.Minute)
 
 	return Db
