@@ -1,7 +1,7 @@
 package main
 
 import (
-    "spider_douban/config"
+	"spider_douban/config"
 	"spider_douban/spider"
 	"time"
 )
@@ -23,6 +23,6 @@ func main() {
 func run() {
 	for _, url := range config.Task.Urls {
 		l := spider.NewListTask("list", url, config.Task.FilterWords)
-		l.Run(15)
+		l.Run(config.Service.MaxRetryTimes)
 	}
 }

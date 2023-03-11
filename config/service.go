@@ -1,7 +1,7 @@
 package config
 
 type ServiceConfig struct {
-	MaxRetryTimes int `yaml:"maxRetryTimes"`
+	MaxRetryTimes int8 `yaml:"maxRetryTimes"`
 }
 
-var Service *ServiceConfig 
+var Service *ServiceConfig
