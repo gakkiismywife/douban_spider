@@ -57,7 +57,7 @@ func (l *ListTask) htmlHandle(e *colly.HTMLElement) {
 
 	//放入缓存
 	result, err := rdb.HSet(context.Background(), config.Task.Home, postUrl, title).Result()
-	log.Println(fmt.Sprintf("[%s] %s saved result:%d,err:%s", l.Flag, title, result, err))
+	log.Println(fmt.Sprintf("[%s] %s saved result:%d,err:%s", l.Flag, title, result, err.Error()))
 
 	time.Sleep(3 * time.Second)
 

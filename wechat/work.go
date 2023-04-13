@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"spider_douban/cache"
 	"spider_douban/config"
@@ -76,7 +77,11 @@ func GetAccessToken(id, secret string) string {
 	}
 
 	url := fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s", id, secret)
-	response, _ := http.Get(url)
+	response, err := http.Get(url)
+	if err != nil {
+		log.Println("[GetAccessToken] failed,err:", err.Error())
+		return ""
+	}
 	defer response.Body.Close()
 	all, err := ioutil.ReadAll(response.Body)
 	if err != nil {
